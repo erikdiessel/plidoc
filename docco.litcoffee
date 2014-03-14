@@ -1,5 +1,22 @@
-Docco
-=====
+Docco++
+=======
+
+What makes Docco++ better than Docco ?
+-----------------------------------
+While Docco does what it does in a quick and dirty way, there are some things
+missing in its feature set:
+- Seperate code *comments* from literate programming style *descriptions* by
+  using different tags to denote them.
+- Use multiline comments for the documentation.
+- Include Mathjax to directly support mathematics with Latex-equations 
+  and make it markdown compatible.
+- Pack documentation in *one* single html-document, including all css-assets,
+  fonts, etc. This is helpful e.g. for code reviews, since you then only have
+  to send one single file instead of a whole zip file.
+        
+
+Documentation of the original
+============================
 
 **Docco** is a quick-and-dirty documentation generator, written in
 [Literate CoffeeScript](http://coffeescript.org/#literate).
