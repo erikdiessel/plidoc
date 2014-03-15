@@ -1,4 +1,4 @@
-var docco = require('docco');
+var docco = require('../../docco.js');
 
 var path = require('path');
 var fs = require('fs');
