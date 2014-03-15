@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+    - "0.10"
+    
+install: "npm install jasmine-node -g;"
+before_script: "./build.sh"
+script: "jasmine-node test/"
