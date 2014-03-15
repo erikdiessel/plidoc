@@ -128,7 +128,7 @@ follows it — by detecting which is which, line by line — and then create an
 individual **section** for it. Each section is an object with `docsText` and
 `codeText` properties, and eventually `docsHtml` and `codeHtml` as well.
 
-    parse = (source, code, config = {}) ->
+    parse = (source, code, config = {languages: {}}) ->
       lines    = code.split '\n'
       sections = []
       lang     = getLanguage source, config
@@ -142,28 +142,44 @@ Our quick-and-dirty implementation of the literate programming style. Simply
 invert the prose and code relationship on a per-line basis, and then continue as
 normal below.
 
-      if lang.literate
-        isText = maybeCode = yes
-        for line, i in lines
-          lines[i] = if maybeCode and match = /^([ ]{4}|[ ]{0,3}\t)/.exec line
-            isText = no
-            line[match[0].length..]
-          else if maybeCode = /^\s*$/.test line
-            if isText then lang.symbol else ''
-          else
-            isText = yes
-            lang.symbol + ' ' + line
+We need a way to search for arbitrary strings, so we need a function which creates
+a regex to search this substring in a string . For this, we need to escape the string,
+see [this stackoverflow question](http://stackoverflow.com/questions/3561493). 
 
-      for line in lines
-        if line.match(lang.commentMatcher) and not line.match(lang.commentFilter)
-          save() if hasCode
-          docsText += (line = line.replace(lang.commentMatcher, '')) + '\n'
-          save() if /^(---+|===+)$/.test line
+      string_regex = (s) ->
+        return new RegExp(s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))
+
+      get_description_end = (i) ->
+        end = code.substring(i).search(string_regex(lang.descriptionEndTag))
+        return if end == -1 then -1 else i + end
+          
+      get_code_end = (i) ->
+        end = code.substring(i).search(string_regex(lang.descriptionStartTag))
+        return if end == -1 then -1 else i + end
+
+      index = get_code_end(0)
+      # Save eventual trailing code
+      sections.push({docsText: "", codeText: code.substring(0, index)})
+      
+      while index != -1
+        description_end = get_description_end(index)
+        # offset index to exclude the tag from the output
+        description_chunk = code.substring(index + lang.descriptionEndTag.length, description_end)
+        code_end = get_code_end(description_end)
+        if code_end == -1 
+          code_end = undefined # => code ends when file ends 
+          index = -1 # => finished, exit loop
         else
-          hasCode = yes
-          codeText += line + '\n'
-      save()
-
+          # Set the next index to the end of the code
+          index = code_end
+          
+        code_chunk = code.substring(description_end + lang.descriptionEndTag.length, code_end)
+          .replace(/^(\s*\n)+/, '')
+          .replace(/(\s*\n*)+$/, '')   # exclude trailing newlines (also with included spaces)
+          
+        # Save description and code together in one section
+        sections.push({docsText: description_chunk, codeText: code_chunk})
+          
       sections
 
 To **format** and highlight the now-parsed sections of code, we use **Highlight.js**

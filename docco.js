@@ -55,9 +55,11 @@
   };
 
   parse = function(source, code, config) {
-    var codeText, docsText, hasCode, i, isText, lang, line, lines, match, maybeCode, save, sections, _i, _j, _len, _len1;
+    var codeText, code_chunk, code_end, description_chunk, description_end, docsText, get_code_end, get_description_end, hasCode, index, lang, lines, save, sections, string_regex;
     if (config == null) {
-      config = {};
+      config = {
+        languages: {}
+      };
     }
     lines = code.split('\n');
     sections = [];
@@ -70,29 +72,48 @@
       });
       return hasCode = docsText = codeText = '';
     };
-    if (lang.literate) {
-      isText = maybeCode = true;
-      for (i = _i = 0, _len = lines.length; _i < _len; i = ++_i) {
-        line = lines[i];
-        lines[i] = maybeCode && (match = /^([ ]{4}|[ ]{0,3}\t)/.exec(line)) ? (isText = false, line.slice(match[0].length)) : (maybeCode = /^\s*$/.test(line)) ? isText ? lang.symbol : '' : (isText = true, lang.symbol + ' ' + line);
-      }
-    }
-    for (_j = 0, _len1 = lines.length; _j < _len1; _j++) {
-      line = lines[_j];
-      if (line.match(lang.commentMatcher) && !line.match(lang.commentFilter)) {
-        if (hasCode) {
-          save();
-        }
-        docsText += (line = line.replace(lang.commentMatcher, '')) + '\n';
-        if (/^(---+|===+)$/.test(line)) {
-          save();
-        }
+    string_regex = function(s) {
+      return new RegExp(s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
+    };
+    get_description_end = function(i) {
+      var end;
+      end = code.substring(i).search(string_regex(lang.descriptionEndTag));
+      if (end === -1) {
+        return -1;
       } else {
-        hasCode = true;
-        codeText += line + '\n';
+        return i + end;
       }
+    };
+    get_code_end = function(i) {
+      var end;
+      end = code.substring(i).search(string_regex(lang.descriptionStartTag));
+      if (end === -1) {
+        return -1;
+      } else {
+        return i + end;
+      }
+    };
+    index = get_code_end(0);
+    sections.push({
+      docsText: "",
+      codeText: code.substring(0, index)
+    });
+    while (index !== -1) {
+      description_end = get_description_end(index);
+      description_chunk = code.substring(index + lang.descriptionEndTag.length, description_end);
+      code_end = get_code_end(description_end);
+      if (code_end === -1) {
+        code_end = void 0;
+        index = -1;
+      } else {
+        index = code_end;
+      }
+      code_chunk = code.substring(description_end + lang.descriptionEndTag.length, code_end).replace(/^(\s*\n)+/, '').replace(/(\s*\n*)+$/, '');
+      sections.push({
+        docsText: description_chunk,
+        codeText: code_chunk
+      });
     }
-    save();
     return sections;
   };
 
