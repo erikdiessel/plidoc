@@ -4,5 +4,5 @@ node_js:
     
 install: 
     - "npm install jasmine-node -g"
-    - "bash ./build.sh"
+    - "npm install"
 script: "jasmine-node test/"
