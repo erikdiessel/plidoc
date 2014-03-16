@@ -6,6 +6,9 @@ TL;DR
 pliDoc is a node tool which generates literate-programming documents in 
 *every* programming language.
 
+Questions ?
+-----------
+
 > What does this name mean ?
 
 'Pli' is the [Esperanto] (http://en.wikipedia.org/wiki/Esperanto) word for 'more'
@@ -299,7 +302,7 @@ Require our external dependencies.
     _           = require 'underscore'
     fs          = require 'fs-extra'
     path        = require 'path'
-    marked      = require 'marked'
+    marked      = require './marked.js'
     commander   = require 'commander'
     highlightjs = require 'highlight.js'
 
@@ -330,7 +333,7 @@ Ignore [hashbangs](http://en.wikipedia.org/wiki/Shebang_%28Unix%29) and interpol
     languages = buildMatchers languages
 
 A function to get the current language we're documenting, based on the
-file extension. Detect and tag "literate" `.ext.md` variants.
+file extension. Detect and tag "literate" `.ext.md` variants
 
     getLanguage = (source, config) ->
       ext  = config.extension or path.extname(source) or path.basename(source)

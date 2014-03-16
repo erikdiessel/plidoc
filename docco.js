@@ -195,7 +195,7 @@
 
   path = require('path');
 
-  marked = require('marked');
+  marked = require('./marked.js');
 
   commander = require('commander');
 
