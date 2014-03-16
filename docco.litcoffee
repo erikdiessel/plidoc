@@ -2,13 +2,18 @@ pliDoc
 =======
 
 > What does this name mean ?
+
 'Pli' is the [Esperanto] (http://en.wikipedia.org/wiki/Esperanto) word for 'more'
 and 'Doc' stands for Documentation.
+
 > Does this mean that I have to learn Esperanto to use pliDoc ?
+
 No, this Esperanto word just shows, that pliDoc can be used to do literate 
 programming in *any* programming language from 'A' like 'Ada' to 'Y' like 'YAML'
 and makes it easy to write *more* and *better* documentation.
+
 > So what does pliDoc for me ?
+
 pliDoc generates documentation from markdown comments in a source file. The source
 is highlighted and the nicely rendered documentation is placed in between.
 pliDoc is based on [Docco] (http://github.com/jashkenas/docco).
