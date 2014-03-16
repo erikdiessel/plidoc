@@ -1,5 +1,10 @@
-pliDoc
-=======
+pliDoc - literate programming at its best
+=========================================
+
+TL;DR
+-----
+pliDoc is a node tool which generates literate-programming documents in 
+*every* programming language.
 
 > What does this name mean ?
 
