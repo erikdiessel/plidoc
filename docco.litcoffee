@@ -1,7 +1,19 @@
-Docco++
+pliDoc
 =======
 
-What makes Docco++ better than Docco ?
+> What does this name mean ?
+'Pli' is the [Esperanto] (http://en.wikipedia.org/wiki/Esperanto) word for 'more'
+and 'Doc' stands for Documentation.
+> Does this mean that I have to learn Esperanto to use pliDoc ?
+No, this Esperanto word just shows, that pliDoc can be used to do literate 
+programming in *any* programming language from 'A' like 'Ada' to 'Y' like 'YAML'
+and makes it easy to write *more* and *better* documentation.
+> So what does pliDoc for me ?
+pliDoc generates documentation from markdown comments in a source file. The source
+is highlighted and the nicely rendered documentation is placed in between.
+pliDoc is based on [Docco] (http://github.com/jashkenas/docco).
+
+What makes pliDoc better than Docco ?
 -----------------------------------
 While Docco does what it does in a quick and dirty way, there are some things
 missing in its feature set:
@@ -128,15 +140,7 @@ follows it — by detecting which is which, line by line — and then create an
 individual **section** for it. Each section is an object with `docsText` and
 `codeText` properties, and eventually `docsHtml` and `codeHtml` as well.
 
-    parse = (source, code, config = {languages: {}}) ->
-      lines    = code.split '\n'
-      sections = []
-      lang     = getLanguage source, config
-      hasCode  = docsText = codeText = ''
 
-      save = ->
-        sections.push {docsText, codeText}
-        hasCode = docsText = codeText = ''
 
 Our quick-and-dirty implementation of the literate programming style. Simply
 invert the prose and code relationship on a per-line basis, and then continue as
@@ -145,6 +149,10 @@ normal below.
 We need a way to search for arbitrary strings, so we need a function which creates
 a regex to search this substring in a string . For this, we need to escape the string,
 see [this stackoverflow question](http://stackoverflow.com/questions/3561493). 
+
+    parse = (source, code, config = {languages: {}}) ->
+      sections = []
+      lang     = getLanguage source, config
 
       string_regex = (s) ->
         return new RegExp(s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'))

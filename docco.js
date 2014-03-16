@@ -55,23 +55,14 @@
   };
 
   parse = function(source, code, config) {
-    var codeText, code_chunk, code_end, description_chunk, description_end, docsText, get_code_end, get_description_end, hasCode, index, lang, lines, save, sections, string_regex;
+    var code_chunk, code_end, description_chunk, description_end, get_code_end, get_description_end, index, lang, sections, string_regex;
     if (config == null) {
       config = {
         languages: {}
       };
     }
-    lines = code.split('\n');
     sections = [];
     lang = getLanguage(source, config);
-    hasCode = docsText = codeText = '';
-    save = function() {
-      sections.push({
-        docsText: docsText,
-        codeText: codeText
-      });
-      return hasCode = docsText = codeText = '';
-    };
     string_regex = function(s) {
       return new RegExp(s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
     };
