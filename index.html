@@ -2,10 +2,11 @@
 
 <html>
 <head>
-  <title>Docco</title>
+  <title>docco.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="public/stylesheets/normalize.css" />
   <link rel="stylesheet" media="all" href="resources/linear/docco.css" />
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script>
 </head>
 <body>
   <div class="container">
@@ -13,10 +14,7 @@
 
       <div class="header">
         
-          
-          <h1 id="docco">Docco</h1>
-
-          
+          <h1>docco.coffee</h1>
         
 
         
@@ -24,7 +22,47 @@
 
       
         
-        <p><strong>Docco</strong> is a quick-and-dirty documentation generator, written in
+        
+        
+      
+        
+        <h1 id="plidoc-literate-programming-at-its-best">pliDoc - literate programming at its best</h1>
+<h2 id="tl-dr">TL;DR</h2>
+<p>pliDoc is a node tool which generates literate-programming documents in 
+<em>every</em> programming language.</p>
+<h2 id="questions-">Questions ?</h2>
+<blockquote>
+<p>What does this name mean ?</p>
+</blockquote>
+<p>‘Pli’ is the [Esperanto] (<a href="http://en.wikipedia.org/wiki/Esperanto">http://en.wikipedia.org/wiki/Esperanto</a>) word for ‘more’
+and ‘Doc’ stands for Documentation.</p>
+<blockquote>
+<p>Does this mean that I have to learn Esperanto to use pliDoc ?</p>
+</blockquote>
+<p>No, this Esperanto word just shows, that pliDoc can be used to do literate 
+programming in <em>any</em> programming language from ‘A’ like ‘Ada’ to ‘Y’ like ‘YAML’
+and makes it easy to write <em>more</em> and <em>better</em> documentation.</p>
+<blockquote>
+<p>So what does pliDoc for me ?</p>
+</blockquote>
+<p>pliDoc generates documentation from markdown comments in a source file. The source
+is highlighted and the nicely rendered documentation is placed in between.
+pliDoc is based on [Docco] (<a href="http://github.com/jashkenas/docco">http://github.com/jashkenas/docco</a>).</p>
+<h2 id="what-makes-plidoc-better-than-docco-">What makes pliDoc better than Docco ?</h2>
+<p>While Docco does what it does in a quick and dirty way, there are some things
+missing in its feature set:</p>
+<ul>
+<li>Seperate code <em>comments</em> from literate programming style <em>descriptions</em> by
+using different tags to denote them.</li>
+<li>Use multiline comments for the documentation.</li>
+<li>Include Mathjax to directly support mathematics with Latex-equations 
+and make it markdown compatible.</li>
+<li>Pack documentation in <em>one</em> single html-document, including all css-assets,
+fonts, etc. This is helpful e.g. for code reviews, since you then only have
+to send one single file instead of a whole zip file.</li>
+</ul>
+<h1 id="documentation-of-the-original">Documentation of the original</h1>
+<p><strong>Docco</strong> is a quick-and-dirty documentation generator, written in
 <a href="http://coffeescript.org/#literate">Literate CoffeeScript</a>.
 It produces an HTML document that displays your comments intermingled with your
 code. All prose is passed through
@@ -50,11 +88,7 @@ Finally, the <a href="http://coffeescript.org/#literate">“literate” style</a
 language is also supported — just tack an <code>.md</code> extension on the end:
 <code>.coffee.md</code>, <code>.py.md</code>, and so on.</p>
 <h2 id="partners-in-crime-">Partners in Crime:</h2>
-
-        
-      
-        
-        <ul>
+<ul>
 <li><p>If Node.js doesn’t run on your platform, or you’d prefer a more
 convenient package, get <a href="http://github.com/rtomayko">Ryan Tomayko</a>‘s
 <a href="http://rtomayko.github.io/rocco/rocco.html">Rocco</a>, the <strong>Ruby</strong> port that’s
@@ -92,11 +126,7 @@ and aims to gracefully handle large projects with complex hierarchies of code.</
 </ul>
 <p>Note that not all ports will support all Docco features … yet.</p>
 <h2 id="main-documentation-generation-functions">Main Documentation Generation Functions</h2>
-
-        
-      
-        
-        <p>Generate the documentation for our configured source file by copying over static
+<p>Generate the documentation for our configured source file by copying over static
 assets, reading all the source files in, splitting them up into prose+code
 sections, highlighting each file in the appropriate language, and printing them
 out in an HTML template.</p>
@@ -137,46 +167,104 @@ out in an HTML template.</p>
 follows it — by detecting which is which, line by line — and then create an
 individual <strong>section</strong> for it. Each section is an object with <code>docsText</code> and
 <code>codeText</code> properties, and eventually <code>docsHtml</code> and <code>codeHtml</code> as well.</p>
-
-        
-          <div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">parse</span> = <span class="hljs-params">(source, code, config = {})</span> -&gt;</span>
-  lines    = code.split <span class="hljs-string">'\n'</span>
-  sections = []
-  lang     = getLanguage source, config
-  hasCode  = docsText = codeText = <span class="hljs-string">''</span>
-
-  <span class="hljs-function"><span class="hljs-title">save</span> = -&gt;</span>
-    sections.push {docsText, codeText}
-    hasCode = docsText = codeText = <span class="hljs-string">''</span></pre></div>
-        
-      
-        
-        <p>Our quick-and-dirty implementation of the literate programming style. Simply
+<p>43
+Our quick-and-dirty implementation of the literate programming style. Simply
 invert the prose and code relationship on a per-line basis, and then continue as
 normal below.</p>
+<p>We need a way to search for arbitrary strings, so we need a function which creates
+a regex to search this substring in a string . For this, we need to escape the string,
+see <a href="http://stackoverflow.com/questions/3561493">this stackoverflow question</a>. </p>
+<p>For MathJax support use this approach:
+str.replace(/aa((?:(?!aa).)<em>)aa/g, function(s) { return s.toUpperCase(); })
+returns </em>str* with all characters enclosed in ‘aa’-patterns uppercased
+example:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>str = “test bbx aa byxc,y,. aa ycvxycvx, aa cyvx,my, aa vyvycx”
+str.replace(/aa((?:(?!aa).)*)aa/g, function(s) { return s.toUpperCase(); })
+    ‘test AA ADGS AA fdsAAS AA adts aa’
+?! is negative lookahead: no string which matches this pattern
+replace can take a </p>
+</blockquote>
+</blockquote>
+</blockquote>
 
         
-          <div class='highlight'><pre>  <span class="hljs-keyword">if</span> lang.literate
-    isText = maybeCode = <span class="hljs-literal">yes</span>
-    <span class="hljs-keyword">for</span> line, i <span class="hljs-keyword">in</span> lines
-      lines[i] = <span class="hljs-keyword">if</span> maybeCode <span class="hljs-keyword">and</span> match = <span class="hljs-regexp">/^([ ]{4}|[ ]{0,3}\t)/</span>.exec line
-        isText = <span class="hljs-literal">no</span>
-        line[match[<span class="hljs-number">0</span>].length..]
-      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> maybeCode = <span class="hljs-regexp">/^\s*$/</span>.test line
-        <span class="hljs-keyword">if</span> isText <span class="hljs-keyword">then</span> lang.symbol <span class="hljs-keyword">else</span> <span class="hljs-string">''</span>
-      <span class="hljs-keyword">else</span>
-        isText = <span class="hljs-literal">yes</span>
-        lang.symbol + <span class="hljs-string">' '</span> + line
+          <div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">regex_escape</span> = <span class="hljs-params">(str)</span> -&gt;</span>
+  str.replace(<span class="hljs-regexp">/[-\/\\^$*+?.()|[\]{}]/g</span>, <span class="hljs-string">'\\$&amp;'</span>)
 
-  <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> lines
-    <span class="hljs-keyword">if</span> line.match(lang.commentMatcher) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> line.match(lang.commentFilter)
-      save() <span class="hljs-keyword">if</span> hasCode
-      docsText += (line = line.replace(lang.commentMatcher, <span class="hljs-string">''</span>)) + <span class="hljs-string">'\n'</span>
-      save() <span class="hljs-keyword">if</span> <span class="hljs-regexp">/^(---+|===+)$/</span>.test line
+<span class="hljs-comment"># Escapes the characters in *str* for use in a regular expression</span>
+<span class="hljs-function"><span class="hljs-title">string_regex</span> = <span class="hljs-params">(str)</span> -&gt;</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RegExp(regex_escape(str), <span class="hljs-string">'g'</span>)
+
+<span class="hljs-function"><span class="hljs-title">escape_for_markdown</span> = <span class="hljs-params">(str)</span> -&gt;</span>
+  escaped_symbols = [ <span class="hljs-string">'\\'</span>, <span class="hljs-string">'`'</span>, <span class="hljs-string">'*'</span>, <span class="hljs-string">'_'</span>, <span class="hljs-string">'{'</span>, <span class="hljs-string">'}'</span>, <span class="hljs-string">'['</span>, <span class="hljs-string">']'</span>,
+                      <span class="hljs-string">'('</span> , <span class="hljs-string">')'</span>, <span class="hljs-string">'#'</span>, <span class="hljs-string">'+'</span>, <span class="hljs-string">'-'</span>, <span class="hljs-string">'.'</span>, <span class="hljs-string">'!'</span> ]
+  <span class="hljs-comment"># escape recursively all *escaped_symbols* in the string,</span>
+  <span class="hljs-comment"># *acc* holds the currently processed, partially escaped string</span>
+  <span class="hljs-keyword">return</span> escaped_symbols.reduce <span class="hljs-function"><span class="hljs-params">(acc, symbol)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> acc.replace(string_regex(symbol), <span class="hljs-string">'\\'</span> + symbol)
+  , str
+
+<span class="hljs-comment"># sample call:</span>
+<span class="hljs-comment"># escape_math("*highlighed*: $$ a_n = \\sqrt{n} $$, a **nice** formula")</span>
+<span class="hljs-comment">#</span>
+
+<span class="hljs-function"><span class="hljs-title">escape_math</span> = <span class="hljs-params">(str)</span> -&gt;</span>
+  math_tags = [
+    { <span class="hljs-attribute">startTag</span>: <span class="hljs-string">"$$"</span>,  <span class="hljs-attribute">endTag</span>: <span class="hljs-string">"$$"</span>},
+    { <span class="hljs-attribute">startTag</span>: <span class="hljs-string">"\\("</span>, <span class="hljs-attribute">endTag</span>: <span class="hljs-string">"\\)"</span>},
+    { <span class="hljs-attribute">startTag</span>: <span class="hljs-string">"\\["</span>, <span class="hljs-attribute">endTag</span>: <span class="hljs-string">"\\]"</span>}
+  ]
+  <span class="hljs-comment"># escape any characters inside of mathematical expressions</span>
+  <span class="hljs-keyword">return</span> math_tags.reduce<span class="hljs-function"><span class="hljs-params">( (acc, math_tag) -&gt;
+    <span class="hljs-keyword">return</span> acc.replace(<span class="hljs-keyword">new</span> RegExp( 
+      # starts <span class="hljs-reserved">with</span> the *startTag*
+      <span class="hljs-string">'('</span> + regex_escape(math_tag.startTag)
+      # does <span class="hljs-keyword">not</span> include the *startTag* inside it =&gt; smallest possible match
+          + <span class="hljs-string">'(?:(?!'</span> + regex_escape(math_tag.startTag) + <span class="hljs-string">').)*'</span>
+      # ends <span class="hljs-reserved">with</span> *endTag*
+          + regex_escape(math_tag.endTag)   + <span class="hljs-string">')'</span>
+      ), escape_for_markdown)
+  , str)</span>     
+
+<span class="hljs-title">parse</span> = <span class="hljs-params">(source, code, config = {languages: {}})</span> -&gt;</span>
+  sections = []
+  lang     = getLanguage source, config
+
+
+
+  <span class="hljs-function"><span class="hljs-title">get_description_end</span> = <span class="hljs-params">(i)</span> -&gt;</span>
+    end = code.substring(i).search(string_regex(lang.descriptionEndTag))
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> end == -<span class="hljs-number">1</span> <span class="hljs-keyword">then</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">else</span> i + end
+
+  <span class="hljs-function"><span class="hljs-title">get_code_end</span> = <span class="hljs-params">(i)</span> -&gt;</span>
+    end = code.substring(i).search(string_regex(lang.descriptionStartTag))
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> end == -<span class="hljs-number">1</span> <span class="hljs-keyword">then</span> -<span class="hljs-number">1</span> <span class="hljs-keyword">else</span> i + end
+
+  index = get_code_end(<span class="hljs-number">0</span>)
+  <span class="hljs-comment"># Save eventual trailing code</span>
+  sections.push({<span class="hljs-attribute">docsText</span>: <span class="hljs-string">""</span>, <span class="hljs-attribute">codeText</span>: code.substring(<span class="hljs-number">0</span>, index)})
+
+  <span class="hljs-keyword">while</span> index != -<span class="hljs-number">1</span>
+    description_end = get_description_end(index)
+    <span class="hljs-comment"># offset index to exclude the tag from the output</span>
+    description_chunk = code.substring(index + lang.descriptionEndTag.length, description_end)
+    code_end = get_code_end(description_end)
+    <span class="hljs-keyword">if</span> code_end == -<span class="hljs-number">1</span> 
+      code_end = <span class="hljs-literal">undefined</span> <span class="hljs-comment"># =&gt; code ends when file ends </span>
+      index = -<span class="hljs-number">1</span> <span class="hljs-comment"># =&gt; finished, exit loop</span>
     <span class="hljs-keyword">else</span>
-      hasCode = <span class="hljs-literal">yes</span>
-      codeText += line + <span class="hljs-string">'\n'</span>
-  save()
+      <span class="hljs-comment"># Set the next index to the end of the code</span>
+      index = code_end
+
+    code_chunk = code.substring(description_end + lang.descriptionEndTag.length, code_end)
+      .replace(<span class="hljs-regexp">/^(\s*\n)+/</span>, <span class="hljs-string">''</span>)
+      .replace(<span class="hljs-regexp">/(\s*\n*)+$/</span>, <span class="hljs-string">''</span>)   <span class="hljs-comment"># exclude trailing newlines (also with included spaces)</span>
+
+    <span class="hljs-comment"># Save description and code together in one section</span>
+    sections.push({<span class="hljs-attribute">docsText</span>: description_chunk, <span class="hljs-attribute">codeText</span>: code_chunk})
 
   sections</pre></div>
         
@@ -245,11 +333,7 @@ name of the source file.</p>
       
         
         <h2 id="configuration">Configuration</h2>
-
-        
-      
-        
-        <p>Default configuration <strong>options</strong>. All of these may be extended by
+<p>Default configuration <strong>options</strong>. All of these may be extended by
 user-specified options.</p>
 
         
@@ -287,19 +371,12 @@ source files for languages for which we have definitions.</p>
     lang
   )</span>.<span class="hljs-title">sort</span><span class="hljs-params">()</span>
 
-  <span class="hljs-title">config</span>
-
-
-</span></pre></div>
+  <span class="hljs-title">config</span></span></pre></div>
         
       
         
         <h2 id="helpers-initial-setup">Helpers &amp; Initial Setup</h2>
-
-        
-      
-        
-        <p>Require our external dependencies.</p>
+<p>Require our external dependencies.</p>
 
         
           <div class='highlight'><pre>_           = <span class="hljs-built_in">require</span> <span class="hljs-string">'underscore'</span>
@@ -339,7 +416,7 @@ language to Docco, just add it to the file.</p>
         <p>Does the line begin with a comment?</p>
 
         
-          <div class='highlight'><pre>    l.commentMatcher = <span class="hljs-regexp">///^\s*<span class="hljs-subst">#{l.symbol}</span>\s?///</span></pre></div>
+          <div class='highlight'><pre>	l.commentMatcher = <span class="hljs-regexp">///^\s*<span class="hljs-subst">#{l.symbol}</span>\s?///</span></pre></div>
         
       
         
@@ -353,7 +430,7 @@ languages = buildMatchers languages</pre></div>
       
         
         <p>A function to get the current language we’re documenting, based on the
-file extension. Detect and tag “literate” <code>.ext.md</code> variants.</p>
+file extension. Detect and tag “literate” <code>.ext.md</code> variants</p>
 
         
           <div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">getLanguage</span> = <span class="hljs-params">(source, config)</span> -&gt;</span>
@@ -375,11 +452,7 @@ file extension. Detect and tag “literate” <code>.ext.md</code> variants.</p>
       
         
         <h2 id="command-line-interface">Command Line Interface</h2>
-
-        
-      
-        
-        <p>Finally, let’s define the interface to run Docco from the command line.
+<p>Finally, let’s define the interface to run Docco from the command line.
 Parse options using <a href="https://github.com/visionmedia/commander.js">Commander</a>.</p>
 
         
@@ -404,10 +477,6 @@ Parse options using <a href="https://github.com/visionmedia/commander.js">Comman
         
         <h2 id="public-api">Public API</h2>
 
-        
-      
-        
-        
         
           <div class='highlight'><pre>Docco = <span class="hljs-built_in">module</span>.<span class="hljs-built_in">exports</span> = {run, <span class="hljs-built_in">document</span>, parse, format, version}</pre></div>
         

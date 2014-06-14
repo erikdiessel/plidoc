@@ -364,6 +364,21 @@ Lexer.prototype.token = function(src, top, bq) {
       });
       continue;
     }
+      
+    var string_regex = function(s) {
+      return new RegExp(s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
+    };
+      
+    // mathjax
+    if (cap = (/\$\$([\$]*)\$\$/i).exec(src)) {
+        src = src.substring(cap[0].length);
+        this.tokens.push({
+            type: 'html',
+            pre: false,
+            text: cap[0]
+        });
+        continue;
+    }
 
     // def
     if ((!bq && top) && (cap = this.rules.def.exec(src))) {

@@ -1,6 +1,6 @@
 {
-  "name": "docco",
-  "description": "The Quick and Dirty Literate Programming Documentation Generator",
+  "name": "plidoc",
+  "description": "The Improved version of Docco",
   "keywords": [
     "documentation",
     "docs",
@@ -8,8 +8,8 @@
     "literate",
     "coffeescript"
   ],
-  "author": "Jeremy Ashkenas",
-  "version": "0.6.3",
+  "author": "Erik Diessel",
+  "version": "0.1.0",
   "licenses": [
     {
       "type": "MIT",
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jashkenas/docco.git"
+    "url": "https://github.com/erikdiessel/plidoc.git"
   },
   "engines": {
     "node": ">=0.2.0"
