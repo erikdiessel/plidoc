@@ -1,11 +1,48 @@
-Plidoc
---------
+###(
+pliDoc - literate programming at its best
+=========================================
 
-Plidoc is an improved version of Docco.
+TL;DR
+-----
+pliDoc is a node tool which generates literate-programming documents in 
+*every* programming language.
+
+Questions ?
+-----------
+
+> What does this name mean ?
+
+'Pli' is the [Esperanto] (http://en.wikipedia.org/wiki/Esperanto) word for 'more'
+and 'Doc' stands for Documentation.
+
+> Does this mean that I have to learn Esperanto to use pliDoc ?
+
+No, this Esperanto word just shows, that pliDoc can be used to do literate 
+programming in *any* programming language from 'A' like 'Ada' to 'Y' like 'YAML'
+and makes it easy to write *more* and *better* documentation.
+
+> So what does pliDoc for me ?
+
+pliDoc generates documentation from markdown comments in a source file. The source
+is highlighted and the nicely rendered documentation is placed in between.
+pliDoc is based on [Docco] (http://github.com/jashkenas/docco).
+
+What makes pliDoc better than Docco ?
+-----------------------------------
+While Docco does what it does in a quick and dirty way, there are some things
+missing in its feature set:
+- Seperate code *comments* from literate programming style *descriptions* by
+  using different tags to denote them.
+- Use multiline comments for the documentation.
+- Include Mathjax to directly support mathematics with Latex-equations 
+  and make it markdown compatible.
+- Pack documentation in *one* single html-document, including all css-assets,
+  fonts, etc. This is helpful e.g. for code reviews, since you then only have
+  to send one single file instead of a whole zip file.
 
 Installation:
 
-  sudo npm install -g docco
+  sudo npm install -g plidoc
 
 Usage: docco [options] FILES
 
